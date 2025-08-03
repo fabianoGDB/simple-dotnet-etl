@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "Rszckh7qI6o=",
+  "success": true,
+  "projectFilePath": "C:\\Users\\docto\\projetos\\etl\\simple-etl-project\\ETLProject.API\\ETLProject.API.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\docto\\.nuget\\packages\\microsoft.aspnetcore.openapi\\9.0.0\\microsoft.aspnetcore.openapi.9.0.0.nupkg.sha512",
+    "C:\\Users\\docto\\.nuget\\packages\\microsoft.openapi\\1.6.17\\microsoft.openapi.1.6.17.nupkg.sha512"
+  ],
+  "logs": []
+}
