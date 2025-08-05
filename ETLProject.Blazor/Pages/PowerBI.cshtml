@@ -1,0 +1,42 @@
+@page "/powerbi"
+@inject HttpClient Http
+
+<h3>Power BI Report</h3>
+
+@if (!string.IsNullOrEmpty(IframeHtml))
+{
+    @((MarkupString)IframeHtml)
+}
+else if (!string.IsNullOrEmpty(Error))
+{
+    <p class="text-danger">@Error</p>
+}
+else
+{
+    <p>Loading...</p>
+}
+
+@code {
+private string IframeHtml;
+private string Error;
+
+protected override async Task OnInitializedAsync()
+{
+try
+{
+var response = await Http.GetAsync("http://localhost:5000/api/powerbi/embed");
+if (response.IsSuccessStatusCode)
+{
+IframeHtml = await response.Content.ReadAsStringAsync();
+}
+else
+{
+Error = $"Failed to load Power BI report: {response.ReasonPhrase}";
+}
+}
+catch (Exception ex)
+{
+Error = $"Error: {ex.Message}";
+}
+}
+}
