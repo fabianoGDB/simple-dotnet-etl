@@ -1,0 +1,58 @@
+@page "/upload"
+@inject HttpClient Http
+
+<h3>Upload CSV File</h3>
+
+<InputFile OnChange="HandleFileSelected" />
+<p>@statusMessage</p>
+@if (!string.IsNullOrEmpty(downloadUrl))
+{
+    <a class="btn btn-success" href="@downloadUrl" target="_blank">Download Transformed CSV</a>
+}
+
+@code {
+private string statusMessage;
+private string downloadUrl;
+
+private async Task HandleFileSelected(InputFileChangeEventArgs e)
+{
+var file = e.File;
+if (file == null)
+{
+statusMessage = "No file selected.";
+return;
+}
+
+var content = new MultipartFormDataContent();
+var fileContent = new StreamContent(file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024));
+fileContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(file.ContentType);
+content.Add(fileContent, "file", file.Name);
+
+try
+{
+statusMessage = "Uploading...";
+var response = await Http.PostAsync("http://localhost:5000/api/etl/upload", content);
+
+if (response.IsSuccessStatusCode)
+{
+var result = await response.Content.ReadFromJsonAsync<ApiResult>();
+    downloadUrl = result?.Download;
+    statusMessage = result?.Message;
+    }
+    else
+    {
+    statusMessage = $"Upload failed: {response.ReasonPhrase}";
+    }
+    }
+    catch (Exception ex)
+    {
+    statusMessage = $"Error: {ex.Message}";
+    }
+    }
+
+    private class ApiResult
+    {
+    public string Message { get; set; }
+    public string Download { get; set; }
+    }
+    }
